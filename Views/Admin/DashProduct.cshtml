@@ -1,0 +1,138 @@
+﻿@model List<Product>
+
+@{
+	Layout = "~/Views/Shared/_DashLayout.cshtml";
+}
+<script>
+	function check(event) {
+		// Display a confirmation dialog box
+		var confirmation = confirm("Are you sure you want to delete?");
+
+		// Check if the user confirmed the deletion
+		if (!confirmation) {
+			event.preventDefault();
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+</script>
+
+<div class="container-fluid dashboard-content ">
+
+	<!-- pageheader  -->
+
+	<div class="row">
+		<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+			<div class="page-header">
+				<h2 class="pageheader-title">Quản Lý  </h2>
+				<div class="page-breadcrumb">
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
+							<li class="breadcrumb-item active" aria-current="page">List all product</li>
+						</ol>
+					</nav>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<main role="main">
+		@if (Model == null)
+		{
+			<p>No Products found.</p>
+		}
+		else
+		{
+
+			<div class="card">
+				<div class="card-body">
+					<div class="d-lg-flex align-items-center mb-4 gap-3">
+						<div class="position-relative">
+							<input type="text" class="form-control ps-5 radius-30" placeholder="Product Name"> <span class="position-absolute top-50 product-show translate-middle-y"><i class="bx bx-search"></i></span>
+						</div>
+						<div class="ms-auto"><a href="/Admin/CreateProduct" class="btn btn-primary radius-30 mt-2 mt-lg-0"><i class="bx bxs-plus-square"></i>Add New Product</a></div>
+
+					</div>
+
+
+					<div class="table-responsive">
+						<table class="table mb-0 text-center">
+							<thead class="table-light">
+								<tr>
+									<th>Id</th>
+									<th>Product Name</th>
+									<th>Main Image</th>
+									<th>Unit Price</th>
+									<th>Date</th>
+									<th>Home status</th>
+									@*<th>ViewDetail</th>*@
+
+									<th>Actions</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var product in Model)
+								{
+									<form method="post" asp-controller="Seller" asp-action="ProcessBill">
+										<input type="hidden" name="billId" value="@product." />
+
+									<tr>
+										<td>
+											<div class="d-flex align-items-center">
+
+												<div class="ms-2">
+													<h6 class="mb-0 font-14">@product.ProductId</h6>
+												</div>
+											</div>
+										</td>
+										<td>@product.ProductName</td>
+										<td>
+											<img src="@product.ImageMain" style="max-width: 50px">
+										</td>
+										<td>@product.ProductPrice</td>
+											@*<td>@product.ImportDate</td>*@
+										<td>@string.Format("{0:dddd, dd MMMM yyyy}", product.ImportDate)</td>
+											@*<td><a type="button" class="btn btn-primary btn-sm radius-30 px-4">@bill.ShippingAddress</a></td>*@
+										<td>
+											<a href="/Admin/changeHomeStatus?pid=@product.ProductId">
+												<i class="fas fa-edit"></i>
+													@(product.HomeStatus == true ? "Enable" : "Disable")
+
+											</a>
+										</td>
+
+											@*<div class="d-flex order-actions">
+								<a href="javascript:;" class=""></a>
+								<a href="javascript:;" class="ms-3"><i class='bx bxs-trash'></i></a>
+								</div>*@
+											@*<td><a href="/Admin/?productId=@product.ProductId" type="button" class="btn btn-primary btn-sm radius-30 px-4">View Detail</a></td>*@
+										<td class="align-middle">
+											<a href="/Admin/ViewDetailProd?productId=@product.ProductId" class="btn btn-info">viewDetail</a>
+											<a href="/Admin/UpdateProduct?productId=@product.ProductId" class="btn btn-primary">update</a>
+											<a href="/Admin/delProd?productId=@product.ProductId" onclick="check(event)" class="btn btn-danger">Delete</a>
+										</td>
+									</tr>
+									</form>
+								}
+
+							</tbody>
+						</table>
+
+
+					</div>
+
+				</div>
+			</div>
+
+
+
+		}
+
+	</main>
+	<!-- end pageheader  -->
+</div>

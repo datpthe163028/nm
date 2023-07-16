@@ -1,0 +1,156 @@
+﻿@{
+    Layout = "~/Views/Shared/_DashLayout.cshtml";
+    DateTime now = DateTime.Now;
+}
+@model SortedDictionary<int, double>
+
+<div class="container-fluid dashboard-content ">
+
+    <!-- pageheader  -->
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="page-header">
+                <h2 class="pageheader-title">Quản Lý  </h2>
+                <div class="page-breadcrumb">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
+                            
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <main role="main">
+        <div style="margin-left: 30px" class="row">
+            <div style=" padding-bottom: 30px; margin-right: 40px; background-color: white" class="col-md-7">
+                <canvas id="revenueChart" width="400" height="200"></canvas>
+                <div style=" margin-bottom: 3px; margin-top: 40px" class="row  d-flex justify-content-center align-items-center">
+                    <p style="font-weight: 400; font-size: 20px">
+
+                        DOANH THU TRONG NĂM
+                    </p>
+                </div>
+                <div style="margin-bottom: 20px" class="row  d-flex justify-content-center align-items-center">
+                    <p style=" font-size: 17px; color: #009688">   <i class="fas fa-dollar-sign"></i> @(ViewData["total"]).000VND</p>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 d-flex justify-content-center align-items-center">
+
+                        <p style="font-size: 17px; color: red">    <i class="fas fa-dollar-sign"></i>  TRONG THÁNG @(ViewData["totalMonth"]).000VND</p>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center align-items-center">
+
+                        <p style="font-size: 17px; color: red">   <i class="fas fa-dollar-sign"></i>  TRONG Ngày @(ViewData["totalDay"]).000VND</p>
+                    </div>
+
+                </div>
+            </div>
+            <div style=" padding-top: 110px; padding-bottom: 30px; margin-left: 30px; background-color: white" class="col-md-4">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+
+    </main>
+    <!-- end pageheader  -->
+</div>
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+    var month = [];
+    var revenue = [];
+    @foreach (var item in Model)
+    {
+        <text>
+            month.push('Tháng ' + '@item.Key');
+        revenue.push(parseFloat('@item.Value'));
+        </text>
+    };
+
+    var revenueData = {
+        labels: [],
+        datasets: [{
+            label: "Doanh thu trong năm ( .000VND )",
+            data: [],
+            fill: false,
+            borderColor: "red",
+            borderWidth: 1,
+            pointRadius: 6,
+            pointHoverRadius: 8,
+            pointStyle: "circle"
+        }]
+    };
+
+    month.forEach(function (month) {
+        revenueData.labels.push(month);
+    });
+
+    revenue.forEach(function (revenue) {
+        revenueData.datasets[0].data.push(revenue);
+    });
+    // Tạo biểu đồ đường
+    var ctx = document.getElementById("revenueChart").getContext("2d");
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: revenueData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+
+    var colors = ['rgb(75, 192, 192)', 'rgb(255, 99, 132)', 'rgb(54, 162, 235)'];
+    var productData = [
+        { name: 'Áo thun A', sales: 100 },
+        { name: 'Quần jean mới', sales: 75 },
+        { name: 'Sản phẩm C', sales: 50 },
+    ];
+
+    var labels = productData.map(function (item) {
+        return item.name;
+    });
+    var data = productData.map(function (item) {
+        return item.sales;
+    });
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Sản phẩm bán chạy nhất',
+                data: data,
+                backgroundColor: colors, 
+                borderColor: colors, 
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 10
+                    }
+                }
+            }
+        }
+    });
+
+
+</script>
